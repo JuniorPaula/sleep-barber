@@ -79,6 +79,7 @@ func (shop *BarberShop) closeShopForDay() {
 	color.Red("The barbershop is now closed for the day, and everyone has gone home.")
 }
 
+// addClient adds a client to the shop
 func (shop *BarberShop) addClient(client string) {
 	color.Green("*** %s enters the shop ***", client)
 
@@ -87,9 +88,9 @@ func (shop *BarberShop) addClient(client string) {
 		case shop.ClientsChan <- client:
 			color.Blue("%s takes a seat in the waiting room.", client)
 		default:
-			color.Red("There are no seats available, so %s leaves.", client)
+			color.White("There are no seats available, so %s leaves.", client)
 		}
 	} else {
-		color.Red("The shop is already closed for the day. so %s leaves.", client)
+		color.White("The shop is already closed for the day. so %s leaves.", client)
 	}
 }
