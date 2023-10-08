@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 )
 
+// BarberShop represents the barbershop in the Sleeping Barber Problem
 type BarberShop struct {
 	ShopCapacity    int
 	HairCutDuration time.Duration
@@ -15,12 +16,13 @@ type BarberShop struct {
 	Open            bool
 }
 
+// addBarber adds a barber to the shop
 func (shop *BarberShop) addBarber(barber string) {
 	shop.NumberOfBarbers++
 
 	go func() {
 		isSleeping := false
-		color.Yellow("%s goes to the wainting room to check for clients", barber)
+		color.Yellow("%s goes to the waiting room to check for clients", barber)
 
 		for {
 			// if there are no clients, the barber goes to sleep
@@ -39,9 +41,22 @@ func (shop *BarberShop) addBarber(barber string) {
 				shop.cutHair(barber, client)
 			} else {
 				// shop is closed, so send the barber home and close the channel
+				shop.sendBarberHome(barber)
+				return
 			}
 		}
 	}()
 }
 
-func (shop *BarberShop) cutHair(barber, client string) {}
+// cutHair simulates the time it takes to cut a client's hair
+func (shop *BarberShop) cutHair(barber, client string) {
+	color.Green("%s is cutting %s's hair.", barber, client)
+	time.Sleep(shop.HairCutDuration)
+	color.Green("%s is done cutting %s's hair.", barber, client)
+}
+
+// sendBarberHome sends the barber home for the day
+func (shop *BarberShop) sendBarberHome(barber string) {
+	color.Blue("%s goes home for the day.", barber)
+	shop.BarbersDoneChan <- true
+}
