@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -50,8 +51,21 @@ func main() {
 	}()
 
 	// add clients
+	i := 1
+	go func() {
+		for {
+			// get a ramdom number with average arrival rate
+			randomMiliseconds := rand.Int() % (arrivalRate * 2)
+			select {
+			case <-shopClosing:
+				return
+			case <-time.After(time.Millisecond * time.Duration(randomMiliseconds)):
+				shop.addClient(fmt.Sprintf("Client #%d", i))
+				i++
+			}
+		}
+	}()
 
 	// block until the barbershop is closed
-
-	time.Sleep(5 * time.Second)
+	<-closed
 }
